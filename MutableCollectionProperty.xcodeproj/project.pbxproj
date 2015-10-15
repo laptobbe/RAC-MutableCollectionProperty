@@ -19,6 +19,10 @@
 		23B531AA1BCF7EE9006656E3 /* Quick.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 23B531A41BCF7E96006656E3 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		23B531AB1BCF7F02006656E3 /* ReactiveCocoa.framework in Copy frameworks */ = {isa = PBXBuildFile; fileRef = 23AE4B401BCE5D9E00D1082B /* ReactiveCocoa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		23B531AC1BCF7F02006656E3 /* Result.framework in Copy frameworks */ = {isa = PBXBuildFile; fileRef = 23AE4B411BCE5D9E00D1082B /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		23B531AD1BCF87B6006656E3 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23AE4B401BCE5D9E00D1082B /* ReactiveCocoa.framework */; };
+		23B531AE1BCF87C9006656E3 /* ReactiveCocoa.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 23AE4B401BCE5D9E00D1082B /* ReactiveCocoa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		23B531AF1BCF87CD006656E3 /* Result.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 23AE4B411BCE5D9E00D1082B /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		23B531B01BCF87D2006656E3 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23AE4B411BCE5D9E00D1082B /* Result.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +54,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				23B531AF1BCF87CD006656E3 /* Result.framework in Copy Frameworks */,
+				23B531AE1BCF87C9006656E3 /* ReactiveCocoa.framework in Copy Frameworks */,
 				23B531A91BCF7EE9006656E3 /* Nimble.framework in Copy Frameworks */,
 				23B531AA1BCF7EE9006656E3 /* Quick.framework in Copy Frameworks */,
 			);
@@ -88,7 +94,9 @@
 			files = (
 				23AE4B301BCE5CF100D1082B /* MutableCollectionProperty.framework in Frameworks */,
 				23B531A51BCF7E96006656E3 /* Nimble.framework in Frameworks */,
+				23B531AD1BCF87B6006656E3 /* ReactiveCocoa.framework in Frameworks */,
 				23B531A61BCF7E96006656E3 /* Quick.framework in Frameworks */,
+				23B531B01BCF87D2006656E3 /* Result.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
