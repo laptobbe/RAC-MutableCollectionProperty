@@ -10,10 +10,15 @@
 		23AE4B291BCE5CF100D1082B /* MutableCollectionProperty.h in Headers */ = {isa = PBXBuildFile; fileRef = 23AE4B281BCE5CF100D1082B /* MutableCollectionProperty.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		23AE4B301BCE5CF100D1082B /* MutableCollectionProperty.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23AE4B251BCE5CF100D1082B /* MutableCollectionProperty.framework */; settings = {ASSET_TAGS = (); }; };
 		23AE4B351BCE5CF100D1082B /* MutableCollectionPropertyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AE4B341BCE5CF100D1082B /* MutableCollectionPropertyTests.swift */; };
-		23AE4B421BCE5D9E00D1082B /* Box.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23AE4B3F1BCE5D9E00D1082B /* Box.framework */; };
 		23AE4B431BCE5D9E00D1082B /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23AE4B401BCE5D9E00D1082B /* ReactiveCocoa.framework */; };
 		23AE4B441BCE5D9E00D1082B /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23AE4B411BCE5D9E00D1082B /* Result.framework */; };
 		23AE4B461BCE5DAF00D1082B /* MutableCollectionProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AE4B451BCE5DAF00D1082B /* MutableCollectionProperty.swift */; settings = {ASSET_TAGS = (); }; };
+		23B531A51BCF7E96006656E3 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23B531A31BCF7E96006656E3 /* Nimble.framework */; };
+		23B531A61BCF7E96006656E3 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23B531A41BCF7E96006656E3 /* Quick.framework */; };
+		23B531A91BCF7EE9006656E3 /* Nimble.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 23B531A31BCF7E96006656E3 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		23B531AA1BCF7EE9006656E3 /* Quick.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 23B531A41BCF7E96006656E3 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		23B531AB1BCF7F02006656E3 /* ReactiveCocoa.framework in Copy frameworks */ = {isa = PBXBuildFile; fileRef = 23AE4B401BCE5D9E00D1082B /* ReactiveCocoa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		23B531AC1BCF7F02006656E3 /* Result.framework in Copy frameworks */ = {isa = PBXBuildFile; fileRef = 23AE4B411BCE5D9E00D1082B /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,6 +31,33 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		23B531A71BCF7EC7006656E3 /* Copy frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				23B531AB1BCF7F02006656E3 /* ReactiveCocoa.framework in Copy frameworks */,
+				23B531AC1BCF7F02006656E3 /* Result.framework in Copy frameworks */,
+			);
+			name = "Copy frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		23B531A81BCF7EDD006656E3 /* Copy Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				23B531A91BCF7EE9006656E3 /* Nimble.framework in Copy Frameworks */,
+				23B531AA1BCF7EE9006656E3 /* Quick.framework in Copy Frameworks */,
+			);
+			name = "Copy Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		23AE4B251BCE5CF100D1082B /* MutableCollectionProperty.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MutableCollectionProperty.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		23AE4B281BCE5CF100D1082B /* MutableCollectionProperty.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MutableCollectionProperty.h; sourceTree = "<group>"; };
@@ -33,10 +65,11 @@
 		23AE4B2F1BCE5CF100D1082B /* MutableCollectionPropertyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MutableCollectionPropertyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		23AE4B341BCE5CF100D1082B /* MutableCollectionPropertyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutableCollectionPropertyTests.swift; sourceTree = "<group>"; };
 		23AE4B361BCE5CF100D1082B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		23AE4B3F1BCE5D9E00D1082B /* Box.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Box.framework; path = Carthage/Build/iOS/Box.framework; sourceTree = "<group>"; };
 		23AE4B401BCE5D9E00D1082B /* ReactiveCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveCocoa.framework; path = Carthage/Build/iOS/ReactiveCocoa.framework; sourceTree = "<group>"; };
 		23AE4B411BCE5D9E00D1082B /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = Carthage/Build/iOS/Result.framework; sourceTree = "<group>"; };
 		23AE4B451BCE5DAF00D1082B /* MutableCollectionProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MutableCollectionProperty.swift; sourceTree = "<group>"; };
+		23B531A31BCF7E96006656E3 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = Carthage/Build/iOS/Nimble.framework; sourceTree = "<group>"; };
+		23B531A41BCF7E96006656E3 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = Carthage/Build/iOS/Quick.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,7 +77,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				23AE4B421BCE5D9E00D1082B /* Box.framework in Frameworks */,
 				23AE4B431BCE5D9E00D1082B /* ReactiveCocoa.framework in Frameworks */,
 				23AE4B441BCE5D9E00D1082B /* Result.framework in Frameworks */,
 			);
@@ -55,6 +87,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				23AE4B301BCE5CF100D1082B /* MutableCollectionProperty.framework in Frameworks */,
+				23B531A51BCF7E96006656E3 /* Nimble.framework in Frameworks */,
+				23B531A61BCF7E96006656E3 /* Quick.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,7 +136,8 @@
 		23AE4B471BCE5DB900D1082B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				23AE4B3F1BCE5D9E00D1082B /* Box.framework */,
+				23B531A31BCF7E96006656E3 /* Nimble.framework */,
+				23B531A41BCF7E96006656E3 /* Quick.framework */,
 				23AE4B401BCE5D9E00D1082B /* ReactiveCocoa.framework */,
 				23AE4B411BCE5D9E00D1082B /* Result.framework */,
 			);
@@ -131,6 +166,7 @@
 				23AE4B211BCE5CF100D1082B /* Frameworks */,
 				23AE4B221BCE5CF100D1082B /* Headers */,
 				23AE4B231BCE5CF100D1082B /* Resources */,
+				23B531A71BCF7EC7006656E3 /* Copy frameworks */,
 			);
 			buildRules = (
 			);
@@ -148,6 +184,7 @@
 				23AE4B2B1BCE5CF100D1082B /* Sources */,
 				23AE4B2C1BCE5CF100D1082B /* Frameworks */,
 				23AE4B2D1BCE5CF100D1082B /* Resources */,
+				23B531A81BCF7EDD006656E3 /* Copy Frameworks */,
 			);
 			buildRules = (
 			);
@@ -375,6 +412,10 @@
 		23AE4B3D1BCE5CF100D1082B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = MutableCollectionPropertyTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.gitdo.MutableCollectionPropertyTests;
@@ -385,6 +426,10 @@
 		23AE4B3E1BCE5CF100D1082B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = MutableCollectionPropertyTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.gitdo.MutableCollectionPropertyTests;
@@ -411,6 +456,7 @@
 				23AE4B3B1BCE5CF100D1082B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		23AE4B3C1BCE5CF100D1082B /* Build configuration list for PBXNativeTarget "MutableCollectionPropertyTests" */ = {
 			isa = XCConfigurationList;
@@ -419,6 +465,7 @@
 				23AE4B3E1BCE5CF100D1082B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
