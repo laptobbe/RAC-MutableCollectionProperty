@@ -11,7 +11,7 @@ Carthage.build
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
 
 ## Build generated
-build/
+./build/
 DerivedData
 
 ## Various settings
@@ -114,7 +114,7 @@ Temporary Items
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
 
 ## Build generated
-build/
+./build/
 DerivedData
 
 ## Various settings
@@ -151,8 +151,6 @@ xcuserdata
 # Add this line if you want to avoid checking in source code from Carthage dependencies.
 # Carthage/Checkouts
 
-Carthage/Build
-
 
 ### Objective-C ###
 # Xcode
@@ -160,7 +158,7 @@ Carthage/Build
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
 
 ## Build generated
-build/
+./build/
 DerivedData
 
 ## Various settings
@@ -196,8 +194,6 @@ xcuserdata
 #
 # Add this line if you want to avoid checking in source code from Carthage dependencies.
 # Carthage/Checkouts
-
-Carthage/Build
 
 ### Objective-C Patch ###
 *.xcscmblueprint
