@@ -420,6 +420,54 @@ class MutableCollectionPropertyTests: QuickSpec {
                 
             })
             
+            context("replacing elements", { () -> Void in
+                
+                it("should notify about the change to the main producer", closure: { () -> () in
+                    let array: [String] = ["test1", "test2"]
+                    let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
+                    waitUntil(action: { (done) -> Void in
+                        property.producer.on(event: { (event) in
+                            switch event {
+                            case .Next(let next):
+                                expect(next) == ["test3", "test4"]
+                                done()
+                            default: break
+                            }
+                        }).start()
+                        property.replace(Range<Int>(start: 0, end: 1), with: ["test3", "test4"])
+                    })
+                })
+                
+                it("should notify the changes producer about the adition", closure: { () -> () in
+                    let array: [String] = ["test1", "test2"]
+                    let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
+                    waitUntil(action: { (done) -> Void in
+                        var i: Int = 0
+                        property.changes.on(event: {
+                            event in
+                            switch event {
+                            case .Next(let change):
+                                switch change {
+                                case .StartChange:
+                                    expect(i) == 0
+                                case .Replaced(let index, let element):
+                                    expect(i) >= 1
+                                    expect(index) == i - 1
+                                    expect(element) == "test\(index+3)"
+                                case .EndChange:
+                                    done()
+                                default: break
+                                }
+                            default: break
+                            }
+                            i++
+                        }).start()
+                        property.replace(Range<Int>(start: 0, end: 1), with: ["test3", "test4"])
+                    })
+                })
+                
+            })
+            
         }
 
     }

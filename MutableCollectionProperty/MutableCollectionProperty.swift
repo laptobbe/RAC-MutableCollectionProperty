@@ -3,9 +3,10 @@ import ReactiveCocoa
 
 public enum CollectionChange<T> {
     case Deletion(Int, T)
-    case Replacement([T])
     case Addition(Int, T)
     case Insertion(Int, T)
+    case Replaced(Int, T)
+    case Replacement([T])
     case StartChange
     case EndChange
 }
@@ -130,6 +131,19 @@ public final class MutableCollectionProperty<T>: PropertyType {
         sendNext(_changesObserver, .StartChange)
         _value.insert(newElement, atIndex: index)
         sendNext(_changesObserver, CollectionChange.Insertion(index, newElement))
+        sendNext(_changesObserver, .EndChange)
+        sendNext(_valueObserver, _value)
+        _lock.unlock()
+    }
+    
+    public func replace(subRange: Range<Int>, with elements: [T]) {
+        _lock.lock()
+        precondition(subRange.startIndex + subRange.count <= _value.count, "Range out of bounds")
+        sendNext(_changesObserver, .StartChange)
+        for (index, element) in elements.enumerate() {
+            _value.replaceRange(Range<Int>(start: subRange.startIndex+index, end: subRange.startIndex+index+1), with: [element])
+            sendNext(_changesObserver, CollectionChange.Replaced(subRange.startIndex+index, element))
+        }
         sendNext(_changesObserver, .EndChange)
         sendNext(_valueObserver, _value)
         _lock.unlock()
