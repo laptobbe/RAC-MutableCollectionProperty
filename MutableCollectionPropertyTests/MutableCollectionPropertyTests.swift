@@ -224,7 +224,202 @@ class MutableCollectionPropertyTests: QuickSpec {
                     })
                 }
             })
+            
+            context("remove all elements", {
+                it("should notify the deletion to the main producer") {
+                    let array: [String] = ["test1", "test2"]
+                    let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
+                    waitUntil(action: { (done) -> Void in
+                        property.producer.on(event: {
+                            event in
+                            switch event {
+                            case .Next(let change):
+                                expect(change) == []
+                                done()
+                            default: break
+                            }
+                        }).start()
+                        property.removeAll()
+                    })
+                }
+                
+                it("should notify the deletion to the changes producer with the right type") {
+                    let array: [String] = ["test1", "test2"]
+                    let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
+                    waitUntil(action: { (done) -> Void in
+                        var i: Int = 0
+                        property.changes.on(event: {
+                            event in
+                            switch event {
+                            case .Next(let change):
+                                switch change {
+                                case .StartChange:
+                                    expect(i) == 0
+                                case .Deletion(let index, let element):
+                                    expect(i) >= 1
+                                    expect(index) == array.count - i
+                                    expect(element) == "test\(array.count - (i-1))"
+                                case .EndChange:
+                                    done()
+                                default: break
+                                }
+                            default: break
+                            }
+                            i++
+                        }).start()
+                        property.removeAll()
+                    })
+                }
+            })
 
+        }
+        
+        context("adding elements") { () -> Void in
+            
+            context("appending elements individually", { () -> Void in
+                
+                it("should notify about the change to the main producer", closure: { () -> () in
+                    let array: [String] = ["test1", "test2"]
+                    let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
+                    waitUntil(action: { (done) -> Void in
+                        property.producer.on(event: { (event) in
+                            switch event {
+                            case .Next(let next):
+                                expect(next) == ["test1", "test2", "test3"]
+                                done()
+                            default: break
+                            }
+                        }).start()
+                        property.append("test3")
+                    })
+                })
+                
+                it("should notify the changes producer about the adition", closure: { () -> () in
+                    let array: [String] = ["test1", "test2"]
+                    let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
+                    waitUntil(action: { (done) -> Void in
+                        var i: Int = 0
+                        property.changes.on(event: {
+                            event in
+                            switch event {
+                            case .Next(let change):
+                                switch change {
+                                case .StartChange:
+                                    expect(i) == 0
+                                case .Addition(let index, let element):
+                                    expect(i) == 1
+                                    expect(index) == 2
+                                    expect(element) == "test3"
+                                case .EndChange:
+                                    done()
+                                default: break
+                                }
+                            default: break
+                            }
+                            i++
+                        }).start()
+                        property.append("test3")
+                    })
+                })
+                
+            })
+            
+            context("appending elements from another array", { () -> Void in
+                
+                it("should notify about the change to the main producer", closure: { () -> () in
+                    let array: [String] = ["test1", "test2"]
+                    let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
+                    waitUntil(action: { (done) -> Void in
+                        property.producer.on(event: { (event) in
+                            switch event {
+                            case .Next(let next):
+                                expect(next) == ["test1", "test2", "test3", "test4"]
+                                done()
+                            default: break
+                            }
+                        }).start()
+                        property.appendContentsOf(["test3", "test4"])
+                    })
+                })
+                
+                it("should notify the changes producer about the adition", closure: { () -> () in
+                    let array: [String] = ["test1", "test2"]
+                    let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
+                    waitUntil(action: { (done) -> Void in
+                        var i: Int = 0
+                        property.changes.on(event: {
+                            event in
+                            switch event {
+                            case .Next(let change):
+                                switch change {
+                                case .StartChange:
+                                    expect(i) == 0
+                                case .Addition(let index, let element):
+                                    expect(i) >= 1
+                                    expect(index) == i+1
+                                    expect(element) == "test\(i+2)"
+                                case .EndChange:
+                                    done()
+                                default: break
+                                }
+                            default: break
+                            }
+                            i++
+                        }).start()
+                        property.appendContentsOf(["test3", "test4"])
+                    })
+                })
+                
+            })
+            
+            context("inserting elements", { () -> Void in
+                
+                it("should notify about the change to the main producer", closure: { () -> () in
+                    let array: [String] = ["test1", "test2"]
+                    let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
+                    waitUntil(action: { (done) -> Void in
+                        property.producer.on(event: { (event) in
+                            switch event {
+                            case .Next(let next):
+                                expect(next) == ["test0", "test1", "test2"]
+                                done()
+                            default: break
+                            }
+                        }).start()
+                        property.insert("test0", atIndex: 0)
+                    })
+                })
+                
+                it("should notify the changes producer about the adition", closure: { () -> () in
+                    let array: [String] = ["test1", "test2"]
+                    let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
+                    waitUntil(action: { (done) -> Void in
+                        var i: Int = 0
+                        property.changes.on(event: {
+                            event in
+                            switch event {
+                            case .Next(let change):
+                                switch change {
+                                case .StartChange:
+                                    expect(i) == 0
+                                case .Insertion(let index, let element):
+                                    expect(i) == 1
+                                    expect(index) == 0
+                                    expect(element) == "test0"
+                                case .EndChange:
+                                    done()
+                                default: break
+                                }
+                            default: break
+                            }
+                            i++
+                        }).start()
+                        property.insert("test0", atIndex: 0)
+                    })
+                })
+                
+            })
+            
         }
 
     }

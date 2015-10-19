@@ -1,22 +1,13 @@
-//
-//  MutableCollectionProperty.swift
-//  MutableCollectionProperty
-//
-//  Created by Pedro Pinera Buendia on 14/10/15.
-//  Copyright © 2015 com.gitdo. All rights reserved.
-//
-
 import Foundation
 import ReactiveCocoa
 
 public enum CollectionChange<T> {
+    case Deletion(Int, T)
+    case Replacement([T])
+    case Addition(Int, T)
+    case Insertion(Int, T)
     case StartChange
     case EndChange
-    case Insertion
-    case Update
-    case Addition
-    case Deletion(Int,T)
-    case Replacement([T])
 }
 
 public final class MutableCollectionProperty<T>: PropertyType {
@@ -37,19 +28,15 @@ public final class MutableCollectionProperty<T>: PropertyType {
     public var changes: SignalProducer<CollectionChange<Value.Element>, NoError>
     public var value: Value {
         get {
-            _lock.lock()
             let value = _value
-            _lock.unlock()
             return value
         }
         set {
-            _lock.lock()
             _value = newValue
             sendNext(_valueObserver, newValue)
             sendNext(_changesObserver, .StartChange)
             sendNext(_changesObserver, .Replacement(_value))
             sendNext(_changesObserver, .EndChange)
-            _lock.unlock()
         }
     }
 
@@ -72,28 +59,79 @@ public final class MutableCollectionProperty<T>: PropertyType {
 
     public func removeFirst() {
         if (_value.count == 0) { return }
+        _lock.lock()
         let deletedElement = _value.removeFirst()
-        sendNext(_valueObserver, _value)
         sendNext(_changesObserver, .StartChange)
         sendNext(_changesObserver, CollectionChange.Deletion(0, deletedElement))
         sendNext(_changesObserver, .EndChange)
+        sendNext(_valueObserver, _value)
+        _lock.unlock()
     }
 
     public func removeLast() {
+        _lock.lock()
         if (_value.count == 0) { return }
         let index = _value.count - 1
         let deletedElement = _value.removeLast()
-        sendNext(_valueObserver, _value)
         sendNext(_changesObserver, .StartChange)
         sendNext(_changesObserver, .Deletion(index, deletedElement))
         sendNext(_changesObserver, .EndChange)
+        sendNext(_valueObserver, _value)
+        _lock.unlock()
+    }
+    
+    public func removeAll() {
+        _lock.lock()
+        sendNext(_changesObserver, .StartChange)
+        for i in (0...(_value.count-1)).reverse() {
+            let object = _value[i]
+            _value.removeAtIndex(i)
+            sendNext(_changesObserver, CollectionChange.Deletion(_value.count, object))
+        }
+        sendNext(_changesObserver, .EndChange)
+        sendNext(_valueObserver, _value)
+        _lock.unlock()
     }
 
     public func removeAtIndex(index: Int) {
+        _lock.lock()
         let deletedElement = _value.removeAtIndex(index)
-        sendNext(_valueObserver, _value)
         sendNext(_changesObserver, .StartChange)
         sendNext(_changesObserver, CollectionChange.Deletion(index, deletedElement))
         sendNext(_changesObserver, .EndChange)
+        sendNext(_valueObserver, _value)
+        _lock.unlock()
+    }
+    
+    public func append(element: T) {
+        _lock.lock()
+        _value.append(element)
+        sendNext(_changesObserver, .StartChange)
+        sendNext(_changesObserver, CollectionChange.Addition(_value.count - 1, element))
+        sendNext(_changesObserver, .EndChange)
+        sendNext(_valueObserver, _value)
+        _lock.unlock()
+    }
+    
+    public func appendContentsOf(elements: [T]) {
+        _lock.lock()
+        sendNext(_changesObserver, .StartChange)
+        for element in elements {
+            _value.append(element)
+            sendNext(_changesObserver, CollectionChange.Addition(_value.count - 1, element))
+        }
+        sendNext(_changesObserver, .EndChange)
+        sendNext(_valueObserver, _value)
+        _lock.unlock()
+    }
+    
+    public func insert(newElement: T, atIndex index: Int) {
+        _lock.lock()
+        sendNext(_changesObserver, .StartChange)
+        _value.insert(newElement, atIndex: index)
+        sendNext(_changesObserver, CollectionChange.Insertion(index, newElement))
+        sendNext(_changesObserver, .EndChange)
+        sendNext(_valueObserver, _value)
+        _lock.unlock()
     }
 }
