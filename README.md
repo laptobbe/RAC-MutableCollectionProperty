@@ -1,4 +1,5 @@
 # RAC-MutableCollectionProperty
+[![Build Status](https://travis-ci.org/gitdoapp/RAC-MutableCollectionProperty.svg)](https://travis-ci.org/gitdoapp/RAC-MutableCollectionProperty)
 Implementation of the concept of MutableCollectionProperty for ReactiveCocoa (Swift)
 
 *Implemented by [@pepibumur](https://github.com/pepibumur)*
