@@ -5,6 +5,22 @@ public enum CollectionChange<T> {
     case Remove(Int, T)
     case Insert(Int, T)
     case Composite([CollectionChange])
+    
+    public func index() -> Int? {
+        switch self {
+        case .Remove(let index, _): return index
+        case .Insert(let index, _): return index
+        default: return nil
+        }
+    }
+    
+    public func element() -> T? {
+        switch self {
+        case .Remove(_, let element): return element
+        case .Insert(_, let element): return element
+        default: return nil
+        }
+    }
 }
 
 public final class MutableCollectionProperty<T>: PropertyType {
@@ -124,7 +140,7 @@ public final class MutableCollectionProperty<T>: PropertyType {
             deletesComposite.append(.Remove(subRange.startIndex + index, replacedElement))
             insertsComposite.append(.Insert(subRange.startIndex + index, element))
         }
-        sendNext(_changesObserver, .Composite(insertsComposite))
+        sendNext(_changesObserver, .Composite(deletesComposite))
         sendNext(_changesObserver, .Composite(insertsComposite))
         sendNext(_valueObserver, _value)
         _lock.unlock()
