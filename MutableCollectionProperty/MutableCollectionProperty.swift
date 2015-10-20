@@ -2,13 +2,25 @@ import Foundation
 import ReactiveCocoa
 
 public enum CollectionChange<T> {
-    case Deletion(Int, T)
-    case Addition(Int, T)
-    case Insertion(Int, T)
-    case Replaced(Int, T)
-    case Replacement([T])
-    case StartChange
-    case EndChange
+    case Remove(Int, T)
+    case Insert(Int, T)
+    case Composite([CollectionChange])
+    
+    public func index() -> Int? {
+        switch self {
+        case .Remove(let index, _): return index
+        case .Insert(let index, _): return index
+        default: return nil
+        }
+    }
+    
+    public func element() -> T? {
+        switch self {
+        case .Remove(_, let element): return element
+        case .Insert(_, let element): return element
+        default: return nil
+        }
+    }
 }
 
 public final class MutableCollectionProperty<T>: PropertyType {
@@ -35,9 +47,7 @@ public final class MutableCollectionProperty<T>: PropertyType {
         set {
             _value = newValue
             sendNext(_valueObserver, newValue)
-            sendNext(_changesObserver, .StartChange)
-            sendNext(_changesObserver, .Replacement(_value))
-            sendNext(_changesObserver, .EndChange)
+            sendNext(_changesObserver, .Composite(newValue.mapWithIndex{CollectionChange.Insert($0, $1)}))
         }
     }
 
@@ -62,9 +72,7 @@ public final class MutableCollectionProperty<T>: PropertyType {
         if (_value.count == 0) { return }
         _lock.lock()
         let deletedElement = _value.removeFirst()
-        sendNext(_changesObserver, .StartChange)
-        sendNext(_changesObserver, CollectionChange.Deletion(0, deletedElement))
-        sendNext(_changesObserver, .EndChange)
+        sendNext(_changesObserver, .Remove(0, deletedElement))
         sendNext(_valueObserver, _value)
         _lock.unlock()
     }
@@ -74,22 +82,16 @@ public final class MutableCollectionProperty<T>: PropertyType {
         if (_value.count == 0) { return }
         let index = _value.count - 1
         let deletedElement = _value.removeLast()
-        sendNext(_changesObserver, .StartChange)
-        sendNext(_changesObserver, .Deletion(index, deletedElement))
-        sendNext(_changesObserver, .EndChange)
+        sendNext(_changesObserver, .Remove(index, deletedElement))
         sendNext(_valueObserver, _value)
         _lock.unlock()
     }
     
     public func removeAll() {
         _lock.lock()
-        sendNext(_changesObserver, .StartChange)
-        for i in (0...(_value.count-1)).reverse() {
-            let object = _value[i]
-            _value.removeAtIndex(i)
-            sendNext(_changesObserver, CollectionChange.Deletion(_value.count, object))
-        }
-        sendNext(_changesObserver, .EndChange)
+        let copiedValue = _value
+        _value.removeAll()
+        sendNext(_changesObserver, .Composite(copiedValue.mapWithIndex{CollectionChange.Remove($0, $1)}))
         sendNext(_valueObserver, _value)
         _lock.unlock()
     }
@@ -97,9 +99,7 @@ public final class MutableCollectionProperty<T>: PropertyType {
     public func removeAtIndex(index: Int) {
         _lock.lock()
         let deletedElement = _value.removeAtIndex(index)
-        sendNext(_changesObserver, .StartChange)
-        sendNext(_changesObserver, CollectionChange.Deletion(index, deletedElement))
-        sendNext(_changesObserver, .EndChange)
+        sendNext(_changesObserver, CollectionChange.Remove(index, deletedElement))
         sendNext(_valueObserver, _value)
         _lock.unlock()
     }
@@ -107,31 +107,24 @@ public final class MutableCollectionProperty<T>: PropertyType {
     public func append(element: T) {
         _lock.lock()
         _value.append(element)
-        sendNext(_changesObserver, .StartChange)
-        sendNext(_changesObserver, CollectionChange.Addition(_value.count - 1, element))
-        sendNext(_changesObserver, .EndChange)
+        sendNext(_changesObserver, .Insert(_value.count - 1, element))
         sendNext(_valueObserver, _value)
         _lock.unlock()
     }
     
     public func appendContentsOf(elements: [T]) {
         _lock.lock()
-        sendNext(_changesObserver, .StartChange)
-        for element in elements {
-            _value.append(element)
-            sendNext(_changesObserver, CollectionChange.Addition(_value.count - 1, element))
-        }
-        sendNext(_changesObserver, .EndChange)
+        let count = _value.count
+        _value.appendContentsOf(elements)
+        sendNext(_changesObserver, .Composite(elements.mapWithIndex{CollectionChange.Insert(count + $0, $1)}))
         sendNext(_valueObserver, _value)
         _lock.unlock()
     }
     
     public func insert(newElement: T, atIndex index: Int) {
         _lock.lock()
-        sendNext(_changesObserver, .StartChange)
         _value.insert(newElement, atIndex: index)
-        sendNext(_changesObserver, CollectionChange.Insertion(index, newElement))
-        sendNext(_changesObserver, .EndChange)
+        sendNext(_changesObserver, .Insert(index, newElement))
         sendNext(_valueObserver, _value)
         _lock.unlock()
     }
@@ -139,13 +132,29 @@ public final class MutableCollectionProperty<T>: PropertyType {
     public func replace(subRange: Range<Int>, with elements: [T]) {
         _lock.lock()
         precondition(subRange.startIndex + subRange.count <= _value.count, "Range out of bounds")
-        sendNext(_changesObserver, .StartChange)
+        var insertsComposite: [CollectionChange<T>] = []
+        var deletesComposite: [CollectionChange<T>] = []
         for (index, element) in elements.enumerate() {
+            let replacedElement = _value[subRange.startIndex+index]
             _value.replaceRange(Range<Int>(start: subRange.startIndex+index, end: subRange.startIndex+index+1), with: [element])
-            sendNext(_changesObserver, CollectionChange.Replaced(subRange.startIndex+index, element))
+            deletesComposite.append(.Remove(subRange.startIndex + index, replacedElement))
+            insertsComposite.append(.Insert(subRange.startIndex + index, element))
         }
-        sendNext(_changesObserver, .EndChange)
+        sendNext(_changesObserver, .Composite(deletesComposite))
+        sendNext(_changesObserver, .Composite(insertsComposite))
         sendNext(_valueObserver, _value)
         _lock.unlock()
     }
+}
+
+extension Array {
+    
+    func mapWithIndex<T>(transform: (Int, Element) -> T) -> [T] {
+        var newValues: [T] = []
+        for (index, element) in self.enumerate() {
+            newValues.append(transform(index, element))
+        }
+        return newValues
+    }
+    
 }

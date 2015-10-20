@@ -51,22 +51,19 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
                     waitUntil(action: {
                         (done) -> Void in
-                        var i: Int = 0
                         property.changes.on(event: {
                             event in
                             switch event {
                             case .Next(let change):
                                 switch change {
-                                case .StartChange:
-                                    expect(i) == 0
-                                case .Replacement(let newValue):
-                                    expect(newValue) == newArray
-                                    expect(i) == 1
-                                case .EndChange:
+                                case .Composite(let changes):
+                                    let indexes = changes.map({$0.index()!})
+                                    let elements = changes.map({$0.element()!})
+                                    expect(indexes) == [0, 1]
+                                    expect(elements) == ["test2", "test3"]
                                     done()
                                 default: break
                                 }
-                                i++
                             default: break
                             }
                         }).start()
@@ -104,25 +101,19 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
                     waitUntil(action: {
                         (done) -> Void in
-                        var i: Int = 0
                         property.changes.on(event: {
                             event in
                             switch event {
                             case .Next(let change):
                                 switch change {
-                                case .StartChange:
-                                    expect(i) == 0
-                                case .Deletion(let index, let element):
-                                    expect(i) == 1
+                                case .Remove(let index, let element):
                                     expect(index) == 1
                                     expect(element) == "test2"
-                                case .EndChange:
                                     done()
                                 default: break
                                 }
                             default: break
                             }
-                            i++
                         }).start()
                         property.removeAtIndex(1)
                     })
@@ -152,25 +143,19 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let array: [String] = ["test1", "test2"]
                     let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
                     waitUntil(action: { (done) -> Void in
-                        var i: Int = 0
                         property.changes.on(event: {
                             event in
                             switch event {
                             case .Next(let change):
                                 switch change {
-                                case .StartChange:
-                                    expect(i) == 0
-                                case .Deletion(let index, let element):
-                                    expect(i) == 1
+                                case .Remove(let index, let element):
                                     expect(index) == 1
                                     expect(element) == "test2"
-                                case .EndChange:
                                     done()
                                 default: break
                                 }
                             default: break
                             }
-                            i++
                         }).start()
                         property.removeLast()
                     })
@@ -200,25 +185,19 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let array: [String] = ["test1", "test2"]
                     let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
                     waitUntil(action: { (done) -> Void in
-                        var i: Int = 0
                         property.changes.on(event: {
                             event in
                             switch event {
                             case .Next(let change):
                                 switch change {
-                                case .StartChange:
-                                    expect(i) == 0
-                                case .Deletion(let index, let element):
-                                    expect(i) == 1
+                                case .Remove(let index, let element):
                                     expect(index) == 0
                                     expect(element) == "test1"
-                                case .EndChange:
                                     done()
                                 default: break
                                 }
                             default: break
                             }
-                            i++
                         }).start()
                         property.removeFirst()
                     })
@@ -247,25 +226,21 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let array: [String] = ["test1", "test2"]
                     let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
                     waitUntil(action: { (done) -> Void in
-                        var i: Int = 0
                         property.changes.on(event: {
                             event in
                             switch event {
                             case .Next(let change):
                                 switch change {
-                                case .StartChange:
-                                    expect(i) == 0
-                                case .Deletion(let index, let element):
-                                    expect(i) >= 1
-                                    expect(index) == array.count - i
-                                    expect(element) == "test\(array.count - (i-1))"
-                                case .EndChange:
+                                case .Composite(let changes):
+                                    let indexes = changes.map({$0.index()!})
+                                    let elements = changes.map({$0.element()!})
+                                    expect(indexes) == [0, 1]
+                                    expect(elements) == ["test1", "test2"]
                                     done()
                                 default: break
                                 }
                             default: break
                             }
-                            i++
                         }).start()
                         property.removeAll()
                     })
@@ -298,25 +273,19 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let array: [String] = ["test1", "test2"]
                     let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
                     waitUntil(action: { (done) -> Void in
-                        var i: Int = 0
                         property.changes.on(event: {
                             event in
                             switch event {
                             case .Next(let change):
                                 switch change {
-                                case .StartChange:
-                                    expect(i) == 0
-                                case .Addition(let index, let element):
-                                    expect(i) == 1
+                                case .Insert(let index, let element):
                                     expect(index) == 2
                                     expect(element) == "test3"
-                                case .EndChange:
                                     done()
                                 default: break
                                 }
                             default: break
                             }
-                            i++
                         }).start()
                         property.append("test3")
                     })
@@ -346,25 +315,21 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let array: [String] = ["test1", "test2"]
                     let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
                     waitUntil(action: { (done) -> Void in
-                        var i: Int = 0
                         property.changes.on(event: {
                             event in
                             switch event {
                             case .Next(let change):
                                 switch change {
-                                case .StartChange:
-                                    expect(i) == 0
-                                case .Addition(let index, let element):
-                                    expect(i) >= 1
-                                    expect(index) == i+1
-                                    expect(element) == "test\(i+2)"
-                                case .EndChange:
+                                case .Composite(let changes):
+                                    let indexes = changes.map({$0.index()!})
+                                    let elements = changes.map({$0.element()!})
+                                    expect(indexes) == [2, 3]
+                                    expect(elements) == ["test3", "test4"]
                                     done()
                                 default: break
                                 }
                             default: break
                             }
-                            i++
                         }).start()
                         property.appendContentsOf(["test3", "test4"])
                     })
@@ -394,25 +359,19 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let array: [String] = ["test1", "test2"]
                     let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
                     waitUntil(action: { (done) -> Void in
-                        var i: Int = 0
                         property.changes.on(event: {
                             event in
                             switch event {
                             case .Next(let change):
                                 switch change {
-                                case .StartChange:
-                                    expect(i) == 0
-                                case .Insertion(let index, let element):
-                                    expect(i) == 1
+                                case .Insert(let index, let element):
                                     expect(index) == 0
                                     expect(element) == "test0"
-                                case .EndChange:
                                     done()
                                 default: break
                                 }
                             default: break
                             }
-                            i++
                         }).start()
                         property.insert("test0", atIndex: 0)
                     })
@@ -448,14 +407,20 @@ class MutableCollectionPropertyTests: QuickSpec {
                             switch event {
                             case .Next(let change):
                                 switch change {
-                                case .StartChange:
-                                    expect(i) == 0
-                                case .Replaced(let index, let element):
-                                    expect(i) >= 1
-                                    expect(index) == i - 1
-                                    expect(element) == "test\(index+3)"
-                                case .EndChange:
-                                    done()
+                                case .Composite(let changes):
+                                    if i == 0 { // Removal
+                                        let indexes = changes.map({$0.index()!})
+                                        let elements = changes.map({$0.element()!})
+                                        expect(indexes) == [0, 1]
+                                        expect(elements) == ["test1", "test2"]
+                                    }
+                                    else { // Insertion
+                                        let indexes = changes.map({$0.index()!})
+                                        let elements = changes.map({$0.element()!})
+                                        expect(indexes) == [0, 1]
+                                        expect(elements) == ["test3", "test4"]
+                                        done()
+                                    }
                                 default: break
                                 }
                             default: break
