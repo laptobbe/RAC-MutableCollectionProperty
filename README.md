@@ -34,22 +34,11 @@ property.producer.startWithNext { newCollection in
 }
 property.changesProducer.startWithNext { change in
   switch change {
-    case .Deletion(let index, let element): break
-    case .Addition(let index, let element): break
-    case .Insertion(let index, let element): break
-    case .Replaced(let index, let element): break
-    case .Replacement(let newCollection): break
-    case .StartChange: break
-    case .EndChange: break
+    case Remove(Int, T)
+    case Insert(Int, T)
+    case Composite([CollectionChange])
   }
 }
-```
-3. Changes producer sends always the events in the following sequence. That allows sending multiple changes in the same operation.
-
-```swift
-.StartChange
-// Some other events
-.EndChange
 ```
 
 ## Developers
