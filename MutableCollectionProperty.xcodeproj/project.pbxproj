@@ -8,11 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		23AE4B291BCE5CF100D1082B /* MutableCollectionProperty.h in Headers */ = {isa = PBXBuildFile; fileRef = 23AE4B281BCE5CF100D1082B /* MutableCollectionProperty.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		23AE4B301BCE5CF100D1082B /* MutableCollectionProperty.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23AE4B251BCE5CF100D1082B /* MutableCollectionProperty.framework */; settings = {ASSET_TAGS = (); }; };
+		23AE4B301BCE5CF100D1082B /* MutableCollectionProperty.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23AE4B251BCE5CF100D1082B /* MutableCollectionProperty.framework */; };
 		23AE4B351BCE5CF100D1082B /* MutableCollectionPropertyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AE4B341BCE5CF100D1082B /* MutableCollectionPropertyTests.swift */; };
 		23AE4B431BCE5D9E00D1082B /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23AE4B401BCE5D9E00D1082B /* ReactiveCocoa.framework */; };
 		23AE4B441BCE5D9E00D1082B /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23AE4B411BCE5D9E00D1082B /* Result.framework */; };
-		23AE4B461BCE5DAF00D1082B /* MutableCollectionProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AE4B451BCE5DAF00D1082B /* MutableCollectionProperty.swift */; settings = {ASSET_TAGS = (); }; };
+		23AE4B461BCE5DAF00D1082B /* MutableCollectionProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AE4B451BCE5DAF00D1082B /* MutableCollectionProperty.swift */; };
 		23B531A51BCF7E96006656E3 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23B531A31BCF7E96006656E3 /* Nimble.framework */; };
 		23B531A61BCF7E96006656E3 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23B531A41BCF7E96006656E3 /* Quick.framework */; };
 		23B531A91BCF7EE9006656E3 /* Nimble.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 23B531A31BCF7E96006656E3 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
