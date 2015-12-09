@@ -46,8 +46,8 @@ public final class MutableCollectionProperty<T>: PropertyType {
         }
         set {
             _value = newValue
-            sendNext(_valueObserver, newValue)
-            sendNext(_changesObserver, .Composite(newValue.mapWithIndex{CollectionChange.Insert($0, $1)}))
+            _valueObserver.sendNext(newValue)
+            _changesObserver.sendNext(.Composite(newValue.mapWithIndex{CollectionChange.Insert($0, $1)}))
         }
     }
 
@@ -61,8 +61,8 @@ public final class MutableCollectionProperty<T>: PropertyType {
     }
 
     deinit {
-        sendCompleted(_valueObserver)
-        sendCompleted(_changesObserver)
+        _valueObserver.sendCompleted()
+        _changesObserver.sendCompleted()
     }
     
     
@@ -72,8 +72,8 @@ public final class MutableCollectionProperty<T>: PropertyType {
         if (_value.count == 0) { return }
         _lock.lock()
         let deletedElement = _value.removeFirst()
-        sendNext(_changesObserver, .Remove(0, deletedElement))
-        sendNext(_valueObserver, _value)
+        _changesObserver.sendNext(.Remove(0, deletedElement))
+        _valueObserver.sendNext(_value)
         _lock.unlock()
     }
 
@@ -82,8 +82,8 @@ public final class MutableCollectionProperty<T>: PropertyType {
         if (_value.count == 0) { return }
         let index = _value.count - 1
         let deletedElement = _value.removeLast()
-        sendNext(_changesObserver, .Remove(index, deletedElement))
-        sendNext(_valueObserver, _value)
+        _changesObserver.sendNext(.Remove(index, deletedElement))
+        _valueObserver.sendNext(_value)
         _lock.unlock()
     }
     
@@ -91,24 +91,24 @@ public final class MutableCollectionProperty<T>: PropertyType {
         _lock.lock()
         let copiedValue = _value
         _value.removeAll()
-        sendNext(_changesObserver, .Composite(copiedValue.mapWithIndex{CollectionChange.Remove($0, $1)}))
-        sendNext(_valueObserver, _value)
+        _changesObserver.sendNext(.Composite(copiedValue.mapWithIndex{CollectionChange.Remove($0, $1)}))
+        _valueObserver.sendNext(_value)
         _lock.unlock()
     }
 
     public func removeAtIndex(index: Int) {
         _lock.lock()
         let deletedElement = _value.removeAtIndex(index)
-        sendNext(_changesObserver, CollectionChange.Remove(index, deletedElement))
-        sendNext(_valueObserver, _value)
+        _changesObserver.sendNext(CollectionChange.Remove(index, deletedElement))
+        _valueObserver.sendNext(_value)
         _lock.unlock()
     }
     
     public func append(element: T) {
         _lock.lock()
         _value.append(element)
-        sendNext(_changesObserver, .Insert(_value.count - 1, element))
-        sendNext(_valueObserver, _value)
+        _changesObserver.sendNext(.Insert(_value.count - 1, element))
+        _valueObserver.sendNext(_value)
         _lock.unlock()
     }
     
@@ -116,16 +116,16 @@ public final class MutableCollectionProperty<T>: PropertyType {
         _lock.lock()
         let count = _value.count
         _value.appendContentsOf(elements)
-        sendNext(_changesObserver, .Composite(elements.mapWithIndex{CollectionChange.Insert(count + $0, $1)}))
-        sendNext(_valueObserver, _value)
+        _changesObserver.sendNext(.Composite(elements.mapWithIndex{CollectionChange.Insert(count + $0, $1)}))
+        _valueObserver.sendNext(_value)
         _lock.unlock()
     }
     
     public func insert(newElement: T, atIndex index: Int) {
         _lock.lock()
         _value.insert(newElement, atIndex: index)
-        sendNext(_changesObserver, .Insert(index, newElement))
-        sendNext(_valueObserver, _value)
+        _changesObserver.sendNext(.Insert(index, newElement))
+        _valueObserver.sendNext(_value)
         _lock.unlock()
     }
     
@@ -140,9 +140,9 @@ public final class MutableCollectionProperty<T>: PropertyType {
             deletesComposite.append(.Remove(subRange.startIndex + index, replacedElement))
             insertsComposite.append(.Insert(subRange.startIndex + index, element))
         }
-        sendNext(_changesObserver, .Composite(deletesComposite))
-        sendNext(_changesObserver, .Composite(insertsComposite))
-        sendNext(_valueObserver, _value)
+        _changesObserver.sendNext(.Composite(deletesComposite))
+        _changesObserver.sendNext(.Composite(insertsComposite))
+        _valueObserver.sendNext(_value)
         _lock.unlock()
     }
 }
