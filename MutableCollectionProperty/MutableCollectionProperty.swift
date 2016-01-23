@@ -4,6 +4,7 @@ import ReactiveCocoa
 public enum CollectionChange<T> {
     case Remove(Int, T)
     case Insert(Int, T)
+    case Move(Int, Int, T, T)
     case Composite([CollectionChange])
     
     public func index() -> Int? {
@@ -125,6 +126,16 @@ public final class MutableCollectionProperty<T>: PropertyType {
         _lock.lock()
         _value.insert(newElement, atIndex: index)
         _changesObserver.sendNext(.Insert(index, newElement))
+        _valueObserver.sendNext(_value)
+        _lock.unlock()
+    }
+    
+    public func swap(source:Int, destination:Int) {
+        _lock.lock()
+        let sourceObject = _value[source]
+        let destinationObject = _value[destination]
+        Swift.swap(&_value[source], &_value[destination])
+        _changesObserver.sendNext(.Move(source, destination, sourceObject, destinationObject))
         _valueObserver.sendNext(_value)
         _lock.unlock()
     }

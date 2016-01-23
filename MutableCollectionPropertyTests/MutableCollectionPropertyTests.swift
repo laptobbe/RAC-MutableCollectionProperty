@@ -249,6 +249,49 @@ class MutableCollectionPropertyTests: QuickSpec {
 
         }
         
+        context("moving elements", { () -> Void in
+            it("should notify about the change to main producer", closure: { () -> () in
+                let array: [String] = ["test1", "test2"]
+                let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
+                waitUntil(action: { (done) -> Void in
+                    property.producer.on(event: { (event) in
+                        switch event {
+                        case .Next(let next):
+                            expect(next) == ["test2", "test1"]
+                            done()
+                        default: break
+                        }
+                    }).start()
+                    property.swap(0, destination:1)
+                })
+            })
+            
+            it("should notify the changes producer about the move", closure: { () -> () in
+                let array: [String] = ["test1", "test2"]
+                let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
+                waitUntil(action: { (done) -> Void in
+                    property.changes.on(event: {
+                        event in
+                        switch event {
+                        case .Next(let change):
+                            switch change {
+                            case let .Move(source, destination, sourceObject, destinationObject):
+                                expect(source) == 0
+                                expect(destination) == 1
+                                expect(sourceObject) == "test1"
+                                expect(destinationObject) == "test2"
+                                done()
+                            default: break
+                            }
+                        default: break
+                        }
+                    }).start()
+                    property.swap(0, destination: 1)
+                })
+            })
+            
+        })
+        
         context("adding elements") { () -> Void in
             
             context("appending elements individually", { () -> Void in
@@ -378,6 +421,8 @@ class MutableCollectionPropertyTests: QuickSpec {
                 })
                 
             })
+            
+            
             
             context("replacing elements", { () -> Void in
                 
